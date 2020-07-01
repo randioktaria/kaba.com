@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Kaba.com : Portal Berita yang katanya Lengkap dan Aktual
+{% endblock %}
+
+{% block heading %}
+    Kaba.com
+{% endblock heading %}
+
+{% block kat %}
+    {% for kat_ut in kategori_utama %}
+        <a href="{% url 'news:kategori' kat_ut.id 'utama' %}">KaBa {{ kat_ut }}</a>
+    {% endfor %}
+{% endblock %}
+
+{% block kategori %}
+    {% for count_berita, kat_tam in kategori_tambahan_list_count_berita %}
+        <a href="{% url 'news:kategori' kat_tam.id 'tambahan' %}" style="width: 100%;"><b>({{ count_berita }})</b> {{ kat_tam }}</a>
+    {% endfor %}
+{% endblock %}
+
+{% block komentar_terbaru %}
+    {% include 'news/komentar_terbaru.html' %}
+{% endblock %}
+
+{% block berita %}
+    <div class='dh12' style='text-align:justify'>
+	    <h2>{{ berita.judul }}</h2>
+	    <b>{{ berita.kategori_tambahan }}</b> <small>oleh <b>{{ berita.penulis }}</b> pada <b>{{ berita.tgl_post }}</b> WIB</small><p>
+	    <img src="{{ MEDIA_URL }}{{ berita.foto }}" width='100%'><p>
+	    {{ berita.header }}<p>
+	    {{ berita.isi }}
+        <p>&nbsp;</p>	
+        <h3>KOMENTARI BERITA INI</h3>
+        <b>Login</b> atau <b>Register</b> untuk mengomentari berita ini
+        <div class="d12">
+            {% if user.is_authenticated %}
+                {% include 'news/komentar_post.html' %}
+            {% else %}
+                {% include 'news/login.html' %}
+                {% include 'news/register.html' %}
+            {% endif %}
+            {% include 'news/komentar.html' %}
+        </div>
+    </div>
+{% endblock %}

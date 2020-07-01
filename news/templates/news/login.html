@@ -1,0 +1,9 @@
+<div class="dh6">
+    <form action="{% url 'news:login' %}" method="post">
+        {% csrf_token %}
+        {% for form in form_login %}
+            {{ form }}
+        {% endfor %}
+        <input type="submit" value="LOGIN">
+    </form>
+</div>

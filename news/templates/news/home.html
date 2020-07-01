@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Kaba.com : Portal Berita yang katanya Lengkap dan Aktual
+{% endblock %}
+
+{% block heading %}
+    Kaba.com
+{% endblock heading %}
+
+{% block kat %}
+    {% for kat_ut in kategori_utama %}
+        <a href="{% url 'news:kategori' kat_ut.id 'utama' %}">KaBa {{ kat_ut }}</a>
+    {% endfor %}
+{% endblock %}
+
+{% block kategori %}
+    {% for count_berita, kat_tam in kategori_tambahan_list_count_berita %}
+        <a href="{% url 'news:kategori' kat_tam.id 'tambahan' %}" style="width: 100%;"><b>({{ count_berita }})</b> {{ kat_tam }}</a>
+    {% endfor %}
+{% endblock %}
+
+{% block komentar_terbaru %}
+    {% include 'news/komentar_terbaru.html' %}
+{% endblock %}
+
+{% block berita %}
+
+    {% if berita_terbaru == None %}
+
+    {% else %}
+    <div class=dh12>
+        <div class='dh12'>
+			<h2><a href="{% url 'news:detail' berita_terbaru.slug %}">{{ berita_terbaru.judul }}</a></h2>
+			<b>{{ berita_terbaru.kategori_tambahan }}</b> Pada {{ berita_terbaru.tgl_post }}<p>
+		</div>
+		<div class='dh6'>
+			<img src='{{ MEDIA_URL}}{{ berita_terbaru.foto }}' width='100%' />
+		</div>
+		<div class='dh6' style='text-align:justify'>
+			{{ berita_terbaru.header }}<p>
+			<a href="{% url 'news:detail' berita_terbaru.slug %}"><button type='button' class='btn btn-more'>Selengkapnya &raquo;</button></a>
+		</div>
+    </div>
+    {% endif %}
+
+    {% for komentar, berita in berita_komentar %}
+    <div class='dh6'>
+        <div id='berita'>
+            <fieldset>
+                <div class='dh12'>
+                    <b>{{ berita.kategori_tambahan }}</b> <br>
+                    <a href="{% url 'news:detail' berita.slug %}"><big>{{ berita.judul }}</big></a><br>
+                    <small>Oleh <b>{{ berita.penulis }}</b> pada <b>{{ berita.tgl_post }} </b>WIB</small><p>
+                </div>
+                <div class='dh5'>
+                    <img src="{{ MEDIA_URL }}{{ berita.foto }}" width='100%' />
+                </div>
+                <div class='dh7' style='text-align:justify'>
+                    {{ berita.header | truncatechars:140 }}<p>
+                </div>
+                <div class='dh12' align='right'>
+                    <b>{{ komentar }} Komentar</b>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+    {% endfor %}
+{% endblock %}

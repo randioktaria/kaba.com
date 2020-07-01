@@ -1,0 +1,12 @@
+{% if hitung_komentar > 0 %}
+    <h3>{{ hitung_komentar }} KOMENTAR</h3>
+    {% for komentar in komentar %}
+    <table border='0' cellpadding='10' cellspacing='10'>
+        <tr>
+            <td valign='top' align='justify'><b>{{ komentar.user.first_name }} {{ komentar.user.last_name }}</b><small><i> pada {{ komentar.tgl_post }} WIB </i></small><p>{{ komentar.komentar }}<br></td>
+        </tr>
+    </table>
+    {% endfor %}
+{% else %}
+    Belum ada komentar untuk berita ini<p>
+{% endif%}

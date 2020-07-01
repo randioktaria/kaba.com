@@ -1,0 +1,9 @@
+<div class="dh6">
+    <form action="{% url 'news:register' %}" method="post">
+        {% csrf_token %}
+        {% for form in form_register %}
+            {{ form }}
+        {% endfor %}
+        <input type="submit" value="REGISTER">
+    </form>
+</div>

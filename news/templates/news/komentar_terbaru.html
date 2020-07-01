@@ -1,0 +1,8 @@
+<fieldset>
+    <h3>5 KOMENTAR TERBARU</h3> 
+    <hr style='color:#007EBB'>    
+    {% for komentar_terbaru in komentar_terbaru %}
+    <b>{{ komentar_terbaru.user.first_name }} {{ komentar_terbaru.user.last_name }}</b> mengomentari berita <b><a href="{% url 'news:detail' komentar_terbaru.berita.slug %}">{{ komentar_terbaru.berita }}</a></b>
+    <hr style='color:#007EBB'>
+    {% endfor %}
+</fieldset>
