@@ -4,7 +4,7 @@ from django.utils.text import slugify
 
 class KategoriUtama(models.Model):
     nama = models.CharField(max_length=30)
-    keterangan = models.TextField('Keterangan')
+    keterangan = models.TextField()
 
     class Meta:
         verbose_name_plural = 'Kategori utama'
