@@ -1,0 +1,76 @@
+{% load static %}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+
+<link rel="stylesheet" href="{% static 'news/css/style.css' %}">
+<title>{% block title %}{% endblock title %}</title>
+<div class="container1">
+  <div class="grid">
+    <div class="dh6">
+	  KaBa.com
+	</div>
+    <div class="dh6" align="right" style="font-size:14px">
+		{% if user.is_authenticated %}
+        	Selamat Datang, <b>{{ user.first_name }} {{ user.last_name }}</b> | <a href="{% url 'news:logout' %}">Logout</a>
+    	{% endif %}
+	</div>
+  </div>
+</div>
+<div class="container">
+  <div class="grid">
+    <div class="dh12">
+	  <div class="topnav" id="myTopnav">
+	  <a href="javascript:void(0);" style="font-size:14px;" class="icon" onclick="myFunction()">&#9776;</a>
+	  <a href="/">KaBa Utama</a>
+	  {% block kat %}{% endblock kat %}
+	  </div>
+	</div>
+	<script>
+	function myFunction(){
+	  var x = document.getElementById("myTopnav");
+	  if(x.className === "topnav"){
+	    x.className += " responsive";
+	  }else{
+	    x.className = "topnav";
+	  }
+	}
+	</script>
+  </div>
+</div>
+
+
+<div class="container2">
+  <div class="grid">	
+    <div class="dh3">
+	<div class="topnav" id="myTopnav1">	
+	  <a href="javascript:void(0);" style="font-size:14px;" class="icon" onclick="myFunction1()">&#9776;</a>
+	  {% block kategori %}{% endblock kategori %}
+	  </div>
+	  {% block komentar_terbaru %}{% endblock komentar_terbaru %}
+	</div>	
+	<script>
+	function myFunction1(){
+	  var x = document.getElementById("myTopnav1");
+	  if(x.className === "topnav"){
+	    x.className += " responsive";
+	  }else{
+	    x.className = "topnav";
+	  }
+	}
+	</script>
+    <div class="dh9">
+    <div class="dh12">
+	{% block berita %}{% endblock berita %}
+    
+	</div>
+	</div>
+  </div>
+</div>
+<div class="container3">
+  <div class="grid">	
+    <div class="dh12">
+	Kaba.com. Copyright &copy; Randi Oktaria Rinanda. 2020
+	</div>
+  </div>
+</div>
