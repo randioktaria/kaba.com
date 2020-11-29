@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'news/base.html' %}
 
 {% block title %}
     Kaba.com : Portal Berita yang katanya Lengkap dan Aktual
@@ -30,7 +30,7 @@
 	    <b>{{ berita.kategori_tambahan }}</b> <small>oleh <b>{{ berita.penulis }}</b> pada <b>{{ berita.tgl_post }}</b> WIB</small><p>
 	    <img src="{{ MEDIA_URL }}{{ berita.foto }}" width='100%'><p>
 	    {{ berita.header }}<p>
-	    {{ berita.isi }}
+	    {{ berita.isi | safe }}
         <p>&nbsp;</p>	
         <h3>KOMENTARI BERITA INI</h3>
         <b>Login</b> atau <b>Register</b> untuk mengomentari berita ini

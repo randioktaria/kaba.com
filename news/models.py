@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
+from ckeditor.fields import RichTextField
 
 class KategoriUtama(models.Model):
     nama = models.CharField(max_length=30)
@@ -27,7 +28,7 @@ class Berita(models.Model):
     penulis = models.ForeignKey('auth.User', on_delete=models.CASCADE, editable=False)
     judul = models.CharField(max_length=255)
     header = models.CharField(max_length=255)
-    isi = models.TextField()
+    isi = RichTextField()
     foto = models.ImageField(upload_to='news')
     tgl_post = models.DateTimeField(auto_now_add=True)
     kategori_utama = models.ForeignKey(KategoriUtama, on_delete=models.CASCADE)
