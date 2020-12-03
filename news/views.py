@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.core.paginator import Paginator
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from .forms import LoginForm, RegisterForm, KomentarForm
@@ -18,7 +19,7 @@ def home(request, id=None, kategori=None):
 
     if kategori == 'utama':
         kategori_tambahan = KategoriTambahan.objects.filter(kategori_utama=id).order_by('nama')
-        berita = Berita.objects.filter(kategori_utama=id, publish=True).order_by('-tgl_post')
+        berita = Berita.objects.filter(kategori_tambahan=id, publish=True).order_by('-tgl_post')
 
         try:
             berita_terbaru = Berita.objects.filter(kategori_utama=id, publish=True).order_by('-tgl_post')[0]
@@ -42,21 +43,25 @@ def home(request, id=None, kategori=None):
         except:
             berita_terbaru = None
 
-    count_berita = [Berita.objects.filter(publish=True, kategori_tambahan=kategori_tambahan.id).count() for kategori_tambahan in kategori_tambahan]
-    kategori_tambahan_list_count_berita = zip(count_berita, kategori_tambahan)
+    kategori_tambahan_count_berita = [(Berita.objects.filter(publish=True, kategori_tambahan=kategori_tambahan.id).count(), kategori_tambahan) for kategori_tambahan in kategori_tambahan]
 
-    hitung_komentar_by_berita = [Komentar.objects.filter(berita=berita.id).count() for berita in berita]
-    berita_komentar = zip(hitung_komentar_by_berita, berita)
+    berita_komentar = [(Komentar.objects.filter(berita=berita.id).count(), berita) for berita in berita]
 
-    # komentar terbaru
+     # komentar terbaru
     komentar_terbaru = Komentar.objects.order_by('-tgl_post')[0:5]
 
+
+    # pagination
+    paginator = Paginator(berita_komentar, 6)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+   
     context = {
         'kategori_utama': kategori_utama,
         'berita_terbaru': berita_terbaru,
-        'berita_komentar': berita_komentar,
-        'kategori_tambahan_list_count_berita': kategori_tambahan_list_count_berita,
+        'kategori_tambahan_count_berita': kategori_tambahan_count_berita,
         'komentar_terbaru': komentar_terbaru,
+        'page_obj': page_obj,
     }
 
     return render(request, 'news/home.html', context)
@@ -67,14 +72,10 @@ def detail(request, slug):
     kategori_utama = KategoriUtama.objects.order_by('nama')
     berita = Berita.objects.get(slug=slug)
     
-    kategori_utama_get_id = KategoriUtama.objects.get(id=berita.kategori_utama_id)
+    kategori_utama_get_id = KategoriTambahan.objects.get(id=berita.kategori_tambahan_id)
     kategori_tambahan = KategoriTambahan.objects.filter(kategori_utama=kategori_utama_get_id.id).order_by('nama')
 	
-    count_berita = [Berita.objects.filter(kategori_tambahan=i.id).count() for i in kategori_tambahan]
-    kategori_tambahan_list_count_berita = zip(count_berita, kategori_tambahan)
-
-    form_login = LoginForm()
-    form_register = RegisterForm()
+    kategori_tambahan_count_berita = [(Berita.objects.filter(kategori_tambahan=kategori_tambahan.id).count(),kategori_tambahan) for kategori_tambahan in kategori_tambahan]
 
     # komentar terbaru
     komentar_terbaru = Komentar.objects.order_by('-tgl_post')[0:5]
@@ -82,6 +83,10 @@ def detail(request, slug):
     # menampilkan komentar
     hitung_komentar = Komentar.objects.filter(berita=berita.id).count()
     komentar = Komentar.objects.filter(berita=berita.id).order_by('-tgl_post')
+
+    # form login dan registrasi
+    form_login = LoginForm()
+    form_register = RegisterForm()
 
     # post komentar
     if request.user.is_authenticated:
@@ -101,7 +106,7 @@ def detail(request, slug):
     context = {
         'kategori_utama': kategori_utama,
         'berita': berita,
-        'kategori_tambahan_list_count_berita': kategori_tambahan_list_count_berita,
+        'kategori_tambahan_count_berita': kategori_tambahan_count_berita,
         'form_login': form_login,
         'form_register': form_register,
         'form_komentar': form_komentar,

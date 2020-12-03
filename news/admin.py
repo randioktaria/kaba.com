@@ -13,14 +13,15 @@ class KategoriTambahanAdmin(admin.ModelAdmin):
     search_fields = ['nama']
 
 class BeritaAdmin(admin.ModelAdmin):
-    list_display = ('judul', 'header', 'publish')
-    list_filter = ('publish', 'kategori_utama')
-    list_per_page = 10
+    list_display = ('judul', 'penulis', 'publish')
+    list_filter = ('publish', 'kategori_tambahan')
+    list_per_page = 10 
     search_fields = ['judul']
 
     fieldsets = [
-        (None, {'fields': ['judul', 'header', 'isi', 'foto']}),
-        ('kategori', {'fields': ['kategori_utama', 'kategori_tambahan']}),
+        (None, {'fields': ['judul', 'headline', 'isi', 'foto']}),
+        ('Kategori', {'fields': ['kategori_tambahan',]}),
+        ('Waktu', {'fields': ['tgl_post', 'tgl_publish']}),
         ('Publish Berita', {'fields': ['publish']}),
     ]
 
@@ -39,25 +40,29 @@ class BeritaAdmin(admin.ModelAdmin):
         return berita.filter(penulis=request.user)
     
     def get_readonly_fields(self, request, obj):
-        
+
         if request.user.is_superuser:
             if obj is not None:
                 if request.user.id != obj.penulis.id:
-                    readonly_fields = ('judul', 'header', 'isi', 'foto','kategori_utama', 'kategori_tambahan',)
-                    return readonly_fields
+                    readonly_fields = ('judul','foto','kategori_tambahan', 'tgl_post', 'tgl_publish')
                 else:
-                    return super().get_readonly_fields(request)
+                    readonly_fields = ('tgl_post', 'tgl_publish', )
             else:
-                return super().get_readonly_fields(request, obj)
+                readonly_fields = ('tgl_post', 'tgl_publish', )
         else:
-            readonly_fields = ('publish')
-            return readonly_fields
+            readonly_fields = ('tgl_post', 'tgl_publish', 'publish',)
 
+        return readonly_fields
 
 class KomentarAdmin(admin.ModelAdmin):
     list_display = ('komentar', )
     readonly_fields = ('user', 'berita', 'komentar')
 
+    def has_add_permission(self, request):
+        return False
+    
+    def has_change_permission(self, request, obj=None):
+        return False
 
 admin.site.register(KategoriUtama, KategoriUtamaAdmin)
 admin.site.register(KategoriTambahan, KategoriTambahanAdmin)
