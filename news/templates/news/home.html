@@ -15,7 +15,7 @@
 {% endblock %}
 
 {% block kategori %}
-    {% for count_berita, kat_tam in kategori_tambahan_list_count_berita %}
+    {% for count_berita, kat_tam in kategori_tambahan_count_berita %}
         <a href="{% url 'news:kategori' kat_tam.id 'tambahan' %}" style="width: 100%;"><b>({{ count_berita }})</b> {{ kat_tam }}</a>
     {% endfor %}
 {% endblock %}
@@ -26,38 +26,36 @@
 
 {% block berita %}
 
-    {% if berita_terbaru == None %}
-
-    {% else %}
-    <div class=dh12>
-        <div class='dh12'>
-			<h2><a href="{% url 'news:detail' berita_terbaru.slug %}">{{ berita_terbaru.judul }}</a></h2>
-			<b>{{ berita_terbaru.kategori_tambahan }}</b> Pada {{ berita_terbaru.tgl_post }} WIB<p>
-		</div>
-		<div class='dh6'>
-			<img src='{{ MEDIA_URL}}{{ berita_terbaru.foto }}' width='100%' />
-		</div>
-		<div class='dh6' style='text-align:justify'>
-			{{ berita_terbaru.header }}<p>
-			<a href="{% url 'news:detail' berita_terbaru.slug %}"><button type='button' class='btn btn-more'>Selengkapnya &raquo;</button></a>
-		</div>
-    </div>
+    {% if berita_terbaru is not None %}
+        <div class=dh12>
+            <div class='dh12'>
+                <h2><a href="{% url 'news:detail' berita_terbaru.slug %}">{{ berita_terbaru.judul }}</a></h2>
+                <b>{{ berita_terbaru.kategori_tambahan }}</b> Pada {{ berita_terbaru.tgl_publish }} WIB<p>
+            </div>
+            <div class='dh6'>
+                <img src='{{ MEDIA_URL}}{{ berita_terbaru.foto }}' width='100%' />
+            </div>
+            <div class='dh6' style='text-align:justify'>
+                {{ berita_terbaru.headline | safe}}<p>
+                <a href="{% url 'news:detail' berita_terbaru.slug %}"><button type='button' class='btn btn-more'>Selengkapnya &raquo;</button></a>
+            </div>
+        </div>
     {% endif %}
 
-    {% for komentar, berita in berita_komentar %}
+    {% for komentar, berita in page_obj %}
     <div class='dh6'>
         <div id='berita'>
             <fieldset>
                 <div class='dh12'>
                     <b>{{ berita.kategori_tambahan }}</b> <br>
                     <a href="{% url 'news:detail' berita.slug %}"><big>{{ berita.judul }}</big></a><br>
-                    <small>Oleh <b>{{ berita.penulis }}</b> pada <b>{{ berita.tgl_post }} </b>WIB</small><p>
+                    <small>Oleh <b>{{ berita.penulis }}</b> pada <b>{{ berita.tgl_publish }} </b>WIB</small><p>
                 </div>
                 <div class='dh5'>
                     <img src="{{ MEDIA_URL }}{{ berita.foto }}" width='100%' />
                 </div>
                 <div class='dh7' style='text-align:justify'>
-                    {{ berita.header | truncatechars:140 }}<p>
+                    {{ berita.headline | truncatechars:140 | safe }}<p>
                 </div>
                 <div class='dh12' align='right'>
                     <b>{{ komentar }} Komentar</b>
@@ -66,4 +64,31 @@
         </div>
     </div>
     {% endfor %}
+
+    {% if page_obj.has_other_pages %}
+    <div class="dh12" style="margin-bottom: 10px; text-align: center;">
+        <div class="pagination" style="text-align: center;">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}">&laquo;</a>
+            {% else %}
+                <a>&laquo;</a>
+            {% endif %}
+
+            {% for i in page_obj.paginator.page_range %}
+                {% if page_obj.number == i %}
+                    <a class="active">{{ i }}</a>    
+                {% else %}
+                    <a href="?page={{ i }}">{{ i }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">&raquo;</a>
+            {% else %}
+                <a>&raquo;</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+
 {% endblock %}

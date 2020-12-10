@@ -274,3 +274,25 @@ a:hover{ color:#333333;}
 	display:block;
 	background-color:#FFFFFF;
 }
+
+.pagination {
+	display: inline-block;
+  }
+  
+.pagination a {
+	color: black;
+	float: left;
+	padding: 8px 16px;
+	text-decoration: none;
+	transition: background-color .3s;
+	border: 1px solid #ddd;
+	margin: 0 4px;
+}
+  
+.pagination a.active {
+	background-color: #007EBB;
+	color: white;
+	border: 1px solid #007EBB;
+  }
+  
+.pagination a:hover:not(.active) {background-color: #ddd;}
