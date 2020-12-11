@@ -2,6 +2,7 @@ from django.contrib import admin
 from .models import KategoriUtama, KategoriTambahan, Berita, Komentar
 # Register your models here.
 
+
 class KategoriUtamaAdmin(admin.ModelAdmin):
     list_display = ('nama', 'keterangan')
     list_per_page = 10
@@ -14,13 +15,13 @@ class KategoriTambahanAdmin(admin.ModelAdmin):
 
 class BeritaAdmin(admin.ModelAdmin):
     list_display = ('judul', 'penulis', 'publish')
-    list_filter = ('publish', 'kategori_tambahan')
+    list_filter = ('publish', 'kategori_utama')
     list_per_page = 10 
     search_fields = ['judul']
 
     fieldsets = [
         (None, {'fields': ['judul', 'headline', 'isi', 'foto']}),
-        ('Kategori', {'fields': ['kategori_tambahan',]}),
+        ('Kategori', {'fields': ['kategori_utama', 'kategori_tambahan',]}),
         ('Waktu', {'fields': ['tgl_post', 'tgl_publish']}),
         ('Publish Berita', {'fields': ['publish']}),
     ]
@@ -44,7 +45,7 @@ class BeritaAdmin(admin.ModelAdmin):
         if request.user.is_superuser:
             if obj is not None:
                 if request.user.id != obj.penulis.id:
-                    readonly_fields = ('judul','foto','kategori_tambahan', 'tgl_post', 'tgl_publish')
+                    readonly_fields = ('judul','foto', 'kategori_utama', 'kategori_tambahan', 'tgl_post', 'tgl_publish')
                 else:
                     readonly_fields = ('tgl_post', 'tgl_publish', )
             else:

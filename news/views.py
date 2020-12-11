@@ -19,7 +19,7 @@ def home(request, id=None, kategori=None):
 
     if kategori == 'utama':
         kategori_tambahan = KategoriTambahan.objects.filter(kategori_utama=id).order_by('nama')
-        berita = Berita.objects.filter(kategori_tambahan=id, publish=True).order_by('-tgl_post')
+        berita = Berita.objects.filter(kategori_utama=id, publish=True).order_by('-tgl_post')
 
         try:
             berita_terbaru = Berita.objects.filter(kategori_utama=id, publish=True).order_by('-tgl_post')[0]
@@ -72,8 +72,7 @@ def detail(request, slug):
     kategori_utama = KategoriUtama.objects.order_by('nama')
     berita = Berita.objects.get(slug=slug)
     
-    kategori_utama_get_id = KategoriTambahan.objects.get(id=berita.kategori_tambahan_id)
-    kategori_tambahan = KategoriTambahan.objects.filter(kategori_utama=kategori_utama_get_id.id).order_by('nama')
+    kategori_tambahan = KategoriTambahan.objects.filter(kategori_utama=berita.kategori_utama).order_by('nama')
 	
     kategori_tambahan_count_berita = [(Berita.objects.filter(kategori_tambahan=kategori_tambahan.id).count(),kategori_tambahan) for kategori_tambahan in kategori_tambahan]
 
