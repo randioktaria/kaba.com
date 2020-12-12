@@ -3,9 +3,10 @@ from django.utils import timezone
 from django.utils.text import slugify
 from ckeditor.fields import RichTextField
 
+from django.core.validators import MinLengthValidator
+
 
 def upload_location(obj, filename):
-    
     extension = ''
     for i in range(len(filename)-1, 0, -1):
         if filename[i] == '.':
@@ -41,9 +42,9 @@ class Berita(models.Model):
     kategori_utama = models.ForeignKey(KategoriUtama, on_delete=models.CASCADE)
     kategori_tambahan = models.ForeignKey(KategoriTambahan, on_delete=models.CASCADE)
     penulis = models.ForeignKey('auth.User', on_delete=models.CASCADE, editable=False)
-    judul = models.CharField(max_length=255)
-    headline = models.TextField()
-    isi = RichTextField()
+    judul = models.CharField(max_length=255, unique=True, validators=[MinLengthValidator(10)])
+    headline = models.TextField(validators=[MinLengthValidator(100)])
+    isi = RichTextField(validators=[MinLengthValidator(300)])
     foto = models.ImageField(upload_to=upload_location)
     tgl_post = models.DateTimeField(auto_now_add=True)
     publish = models.BooleanField(default=False)
@@ -60,10 +61,12 @@ class Berita(models.Model):
     def save(self):
         self.slug = slugify(self.judul)
 
+        # tambahkan kat utama secara otomatis
+        kat_tam = KategoriTambahan.objects.get(id=self.kategori_tambahan.id)
+        self.kategori_utama = kat_tam.kategori_utama
+
         if self.publish is True:
             self.tgl_publish = timezone.now()
-        else:
-            self.tgl_publish = None
 
         super().save()
 

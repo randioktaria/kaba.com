@@ -19,27 +19,27 @@ def home(request, id=None, kategori=None):
 
     if kategori == 'utama':
         kategori_tambahan = KategoriTambahan.objects.filter(kategori_utama=id).order_by('nama')
-        berita = Berita.objects.filter(kategori_utama=id, publish=True).order_by('-tgl_post')
+        berita = Berita.objects.filter(kategori_utama=id, publish=True).order_by('-tgl_publish')
 
         try:
-            berita_terbaru = Berita.objects.filter(kategori_utama=id, publish=True).order_by('-tgl_post')[0]
+            berita_terbaru = Berita.objects.filter(kategori_utama=id, publish=True).order_by('-tgl_publish')[0]
         except:
             berita_terbaru = None
 
     elif kategori == 'tambahan':
         kategori_tambahan = KategoriTambahan.objects.filter(id=id).order_by('nama')
-        berita = Berita.objects.filter(kategori_tambahan=id, publish=True).order_by('-tgl_post')
+        berita = Berita.objects.filter(kategori_tambahan=id, publish=True).order_by('-tgl_publish')
 
         try:
-            berita_terbaru = Berita.objects.filter(kategori_tambahan=id, publish=True).order_by('-tgl_post')[0]
+            berita_terbaru = Berita.objects.filter(kategori_tambahan=id, publish=True).order_by('-tgl_publish')[0]
         except:
             berita_terbaru = None
     else: 
         kategori_tambahan = KategoriTambahan.objects.order_by('nama')
-        berita = Berita.objects.filter(publish=True).order_by('-tgl_post')
+        berita = Berita.objects.filter(publish=True).order_by('-tgl_publish')
 
         try:
-            berita_terbaru = Berita.objects.filter(publish=True).order_by('-tgl_post')[0]
+            berita_terbaru = Berita.objects.filter(publish=True).order_by('-tgl_publish')[0]
         except:
             berita_terbaru = None
 

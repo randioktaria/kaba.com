@@ -20,8 +20,8 @@ class BeritaAdmin(admin.ModelAdmin):
     search_fields = ['judul']
 
     fieldsets = [
-        (None, {'fields': ['judul', 'headline', 'isi', 'foto']}),
-        ('Kategori', {'fields': ['kategori_utama', 'kategori_tambahan',]}),
+        (None, {'fields': ['judul', 'headline', 'isi', 'foto',]}),
+        ('Kategori', {'fields': ['kategori_tambahan',]}),
         ('Waktu', {'fields': ['tgl_post', 'tgl_publish']}),
         ('Publish Berita', {'fields': ['publish']}),
     ]
@@ -54,6 +54,17 @@ class BeritaAdmin(admin.ModelAdmin):
             readonly_fields = ('tgl_post', 'tgl_publish', 'publish',)
 
         return readonly_fields
+
+    def has_delete_permission(self, request, obj=None):
+        if request.user.is_superuser:
+            return True
+        else:
+            b = Berita.objects.filter(judul=obj)
+            for i in b:
+                if i.publish == True:
+                    return False
+            else:
+                return True
 
 class KomentarAdmin(admin.ModelAdmin):
     list_display = ('komentar', )
