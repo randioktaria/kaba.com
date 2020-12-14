@@ -34,14 +34,12 @@ class BeritaAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         berita = super().get_queryset(request)
-
         if request.user.is_superuser:
             return berita
             
         return berita.filter(penulis=request.user)
     
     def get_readonly_fields(self, request, obj):
-
         if request.user.is_superuser:
             if obj is not None:
                 if request.user.id != obj.penulis.id:
