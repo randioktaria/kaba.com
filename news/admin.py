@@ -18,7 +18,7 @@ class BeritaAdmin(admin.ModelAdmin):
     list_filter = ('publish', 'kategori_utama')
     list_per_page = 10 
     search_fields = ['judul']
-
+    
     fieldsets = [
         (None, {'fields': ['judul', 'headline', 'isi', 'foto',]}),
         ('Kategori', {'fields': ['kategori_tambahan',]}),
