@@ -14,22 +14,22 @@ from .models import (
 # Create your views here.
 
 def home(request, id=None, kategori=None):
-
+    # ambil semua kategori utama
     kategori_utama = KategoriUtama.objects.order_by('nama')
 
     if kategori == 'utama':
+        berita = Berita.objects.filter(kategori_tambahan__in=KategoriTambahan.objects.filter(kategori_utama=id), publish=True).order_by('-tgl_publish')
         kategori_tambahan = KategoriTambahan.objects.filter(kategori_utama=id).order_by('nama')
-        berita = Berita.objects.filter(kategori_utama=id, publish=True).order_by('-tgl_publish')
-
+        # cek berita terbaru
         try:
-            berita_terbaru = Berita.objects.filter(kategori_utama=id, publish=True).order_by('-tgl_publish')[0]
+            berita_terbaru = Berita.objects.filter(kategori_tambahan__in=KategoriTambahan.objects.filter(kategori_utama=id), publish=True).order_by('-tgl_publish')[0]
         except:
             berita_terbaru = None
 
     elif kategori == 'tambahan':
         kategori_tambahan = KategoriTambahan.objects.filter(id=id).order_by('nama')
         berita = Berita.objects.filter(kategori_tambahan=id, publish=True).order_by('-tgl_publish')
-
+        # cek berita terbaru
         try:
             berita_terbaru = Berita.objects.filter(kategori_tambahan=id, publish=True).order_by('-tgl_publish')[0]
         except:
@@ -37,7 +37,7 @@ def home(request, id=None, kategori=None):
     else: 
         kategori_tambahan = KategoriTambahan.objects.order_by('nama')
         berita = Berita.objects.filter(publish=True).order_by('-tgl_publish')
-
+        # cek berita terbaru
         try:
             berita_terbaru = Berita.objects.filter(publish=True).order_by('-tgl_publish')[0]
         except:
@@ -49,7 +49,6 @@ def home(request, id=None, kategori=None):
 
      # komentar terbaru
     komentar_terbaru = Komentar.objects.order_by('-tgl_post')[0:5]
-
 
     # pagination
     paginator = Paginator(berita_komentar, 6)
@@ -68,13 +67,13 @@ def home(request, id=None, kategori=None):
 
 
 def detail(request, slug):
-
+    # ambil semua kategori utama
     kategori_utama = KategoriUtama.objects.order_by('nama')
     berita = Berita.objects.get(slug=slug)
-    
-    kategori_tambahan = KategoriTambahan.objects.filter(kategori_utama=berita.kategori_utama).order_by('nama')
-	
-    kategori_tambahan_count_berita = [(Berita.objects.filter(kategori_tambahan=kategori_tambahan.id).count(),kategori_tambahan) for kategori_tambahan in kategori_tambahan]
+    # kategori tambahan berdasarkan kat utama
+    kategori_tambahan = KategoriTambahan.objects.filter(kategori_utama=berita.kategori_tambahan.kategori_utama.id).order_by('nama')
+	# hitung berita berdasarkan kategori tambahan 
+    kategori_tambahan_count_berita = [(Berita.objects.filter(kategori_tambahan=kategori_tambahan.id).count(), kategori_tambahan) for kategori_tambahan in kategori_tambahan]
 
     # komentar terbaru
     komentar_terbaru = Komentar.objects.order_by('-tgl_post')[0:5]

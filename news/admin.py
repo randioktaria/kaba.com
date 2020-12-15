@@ -15,7 +15,7 @@ class KategoriTambahanAdmin(admin.ModelAdmin):
 
 class BeritaAdmin(admin.ModelAdmin):
     list_display = ('judul', 'penulis', 'publish')
-    list_filter = ('publish', 'kategori_utama')
+    list_filter = ('publish', 'kategori_tambahan')
     list_per_page = 10 
     search_fields = ['judul']
     
