@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils import timezone
 from .models import KategoriUtama, KategoriTambahan, Berita, Komentar
 # Register your models here.
 
@@ -30,6 +31,10 @@ class BeritaAdmin(admin.ModelAdmin):
         if channge is False:
             obj.penulis = request.user
 
+        if request.user.is_superuser:
+            if obj.publish == True:
+                obj.tgl_publish = timezone.now()
+
         super().save_model(request, obj, form, channge)
 
     def get_queryset(self, request):
@@ -57,13 +62,12 @@ class BeritaAdmin(admin.ModelAdmin):
         if request.user.is_superuser:
             return True
         else:
-            b = Berita.objects.filter(judul=obj)
-            for i in b:
-                if i.publish == True:
+            if obj != None:
+                if obj.publish == True:
                     return False
-            else:
-                return True
-
+                else:
+                    return True
+                               
 class KomentarAdmin(admin.ModelAdmin):
     list_display = ('komentar', )
     readonly_fields = ('user', 'berita', 'komentar')

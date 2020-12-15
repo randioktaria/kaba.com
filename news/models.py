@@ -59,10 +59,6 @@ class Berita(models.Model):
 
     def save(self):
         self.slug = slugify(self.judul)
-        
-        if self.publish is True:
-            self.tgl_publish = timezone.now()
-
         super().save()
 
 class Komentar(models.Model):
