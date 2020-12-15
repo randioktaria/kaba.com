@@ -108,7 +108,6 @@ def detail(request, slug):
         'form_login': form_login,
         'form_register': form_register,
         'form_komentar': form_komentar,
-        'slug': slug,
         'hitung_komentar': hitung_komentar,
         'komentar': komentar,
         'komentar_terbaru': komentar_terbaru,
